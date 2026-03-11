@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 function BookingForm({
   form,
@@ -7,14 +7,18 @@ function BookingForm({
   bookedSlots,
   setForm
 }) {
+  const [slotError, setSlotError] = useState(false);
   return (
     <>
       <h2>🏥 Clinic Appointment Booking</h2>
 
       <form onSubmit={handleSubmit}>
+        <p style={{ fontSize: "12px", color: "#666" }}>
+          * Required fields
+        </p>
         <input
           name="name"
-          placeholder="Patient Name"
+          placeholder="Name *"
           value={form.name}
           onChange={handleChange}
           required
@@ -23,7 +27,7 @@ function BookingForm({
 
         <input
           name="phone"
-          placeholder="Phone Number"
+          placeholder="Phone *"
           value={form.phone}
           onChange={handleChange}
           required
@@ -32,7 +36,7 @@ function BookingForm({
 
         <input
           name="age"
-          placeholder="Age"
+          placeholder="Age *"
           value={form.age}
           onChange={handleChange}
           style={{ width: "100%", marginBottom: 10 }}
@@ -40,7 +44,7 @@ function BookingForm({
 
         <textarea
           name="reason"
-          placeholder="Reason for visit"
+          placeholder="Reason *"
           value={form.reason}
           onChange={handleChange}
           style={{ width: "100%", marginBottom: 10 }}
@@ -57,32 +61,55 @@ function BookingForm({
 
         {/* ⭐ Time Slot Buttons */}
         <div style={{ marginBottom: 20 }}>
-          <p><strong>Select Time Slot</strong></p>
-
+          <p><strong>Select Time Slot *</strong></p>
+          {slotError && (
+            <p style={{ color: "#d32f2f", fontSize: "12px" }}>
+              Please select a date first
+            </p>
+          )}
           {[
-            "09:00","09:30","10:00","10:30",
-            "11:00","11:30","12:00",
-            "14:00","14:30","15:00","15:30","16:00"
-          ]
-            .filter(slot => !bookedSlots.includes(slot))
-            .map(slot => (
+            "09:00", "09:30", "10:00", "10:30",
+            "11:00", "11:30", "12:00",
+            "14:00", "14:30", "15:00", "15:30", "16:00"
+          ].map(slot => {
+            const isBooked = bookedSlots.includes(slot);
+
+            return (
               <button
                 key={slot}
                 type="button"
-                onClick={() => setForm({ ...form, time: slot })}
+                disabled={isBooked}
+                onClick={() => {
+                  if (!form.date) {
+                    setSlotError(true);
+                    return;
+                  }
+
+                  setSlotError(false);
+                  setForm({ ...form, time: slot });
+                }}
                 style={{
                   margin: 5,
                   padding: "8px 12px",
-                  backgroundColor: form.time === slot ? "#4CAF50" : "#eee",
-                  color: form.time === slot ? "white" : "black",
+                  backgroundColor: isBooked
+                    ? "#ddd"
+                    : form.time === slot
+                      ? "#4CAF50"
+                      : "#eee",
+                  color: isBooked
+                    ? "#777"
+                    : form.time === slot
+                      ? "white"
+                      : "black",
                   border: "none",
                   borderRadius: 6,
-                  cursor: "pointer"
+                  cursor: isBooked ? "not-allowed" : "pointer"
                 }}
               >
                 {slot}
               </button>
-            ))}
+            );
+          })}
         </div>
 
         <button type="submit" style={{ width: "100%" }}>

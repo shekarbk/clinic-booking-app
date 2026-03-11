@@ -85,6 +85,33 @@ function App() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (
+      !form.name ||
+      !form.phone ||
+      !form.age ||
+      !form.reason ||
+      !form.date ||
+      !form.time
+    ) {
+      alert("Please fill all required fields.");
+      return;
+    }
+
+    const phoneRegex = /^[0-9]{8,15}$/;
+
+    if (!phoneRegex.test(form.phone)) {
+      alert("Enter a valid phone number.");
+      return;
+    }
+
+    const ageNum = parseInt(form.age);
+
+    if (ageNum <= 0 || ageNum > 120) {
+      alert("Enter a valid age.");
+      return;
+    }
+
+    // e.preventDefault();
 
     try {
       // ⭐ Get today's date
@@ -175,16 +202,16 @@ function App() {
       />
 
       <hr style={{ margin: "40px 0" }} />
-      <AdminLogin isAdmin={isAdmin} adminLogin={adminLogin} />
+      <AdminLogin isAdmin={isAdmin} setIsAdmin={setIsAdmin} />
       {isAdmin && (
         <AdminDashboard
-        appointments={appointments}
-        updateStatus={updateStatus}
-        showTodayOnly={showTodayOnly}
-        searchTerm={searchTerm}
-        currentToken={currentToken}
-        setCurrentToken={setCurrentToken}
-      />
+          appointments={appointments}
+          updateStatus={updateStatus}
+          showTodayOnly={showTodayOnly}
+          searchTerm={searchTerm}
+          currentToken={currentToken}
+          setCurrentToken={setCurrentToken}
+        />
       )}
     </div>
   );

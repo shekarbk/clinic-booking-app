@@ -12,14 +12,29 @@ function AdminDashboard({
   setCurrentToken,
 }) {
   const [showWalkInForm, setShowWalkInForm] = React.useState(false);
+  const [activeTab, setActiveTab] = React.useState("today");
   const [walkInData, setWalkInData] = React.useState({
     name: "",
     age: "",
     reason: "",
   });
+  const today = new Date().toISOString().split("T")[0];
+  let filteredAppointments = appointments;
+
+  if (activeTab === "today") {
+    filteredAppointments = appointments.filter((a) => a.date === today);
+  }
+
+  if (activeTab === "upcoming") {
+    filteredAppointments = appointments.filter((a) => a.date > today);
+  }
+
+  if (activeTab === "completed") {
+    filteredAppointments = appointments.filter((a) => a.status === "Completed");
+  }
   // ⭐ ADD WALK-IN FUNCTION HERE
   const handleWalkIn = async () => {
-    const today = new Date().toISOString().split("T")[0];
+    //const today = new Date().toISOString().split("T")[0];
 
     const q = query(collection(db, "appointments"), where("date", "==", today));
 
@@ -42,7 +57,7 @@ function AdminDashboard({
     setShowWalkInForm(false);
   };
 
-  const today = new Date().toISOString().split("T")[0];
+  //const today = new Date().toISOString().split("T")[0];
 
   const todayAppointments = appointments.filter((a) => a.date === today);
 
@@ -76,9 +91,26 @@ function AdminDashboard({
         <p>❌ Cancelled: {cancelledToday}</p>
       </div>
 
+      <div style={{ marginBottom: 15 }}>
+        <button
+          onClick={() => setActiveTab("today")}
+          style={{ marginRight: 8 }}
+        >
+          Today
+        </button>
+
+        <button
+          onClick={() => setActiveTab("upcoming")}
+          style={{ marginRight: 8 }}
+        >
+          Upcoming
+        </button>
+
+        <button onClick={() => setActiveTab("completed")}>Completed</button>
+      </div>
       <button
         onClick={() => {
-          const today = new Date().toISOString().split("T")[0];
+          //const today = new Date().toISOString().split("T")[0];
 
           const todayAppointments = appointments
             .filter((a) => a.date === today)
@@ -175,7 +207,7 @@ function AdminDashboard({
           gap: 15,
         }}
       >
-        {appointments
+        {filteredAppointments
           .filter((appt) => {
             const matchesSearch =
               appt.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -185,12 +217,12 @@ function AdminDashboard({
 
             if (!showTodayOnly) return true;
 
-            const today = new Date().toISOString().split("T")[0];
+            //const today = new Date().toISOString().split("T")[0];
             return appt.date === today;
           })
           .sort((a, b) => {
             // If both are today → sort by token
-            const today = new Date().toISOString().split("T")[0];
+            //const today = new Date().toISOString().split("T")[0];
 
             if (a.date === today && b.date === today) {
               return (a.token || 0) - (b.token || 0);
