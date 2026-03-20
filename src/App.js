@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { db } from "./firebase";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+
 import {
   collection,
   addDoc,
@@ -165,55 +167,63 @@ function App() {
     setBookedSlots(slots);
   };
   return (
-    <div style={{ maxWidth: 900, margin: "40px auto", fontFamily: "Arial" }}>
-      {lastToken && (
-        <div
-          style={{
-            backgroundColor: "#e8f5e9",
-            padding: 15,
-            marginBottom: 15,
-            borderRadius: 6,
-            textAlign: "center",
-          }}
-        >
-          <h3>✅ Appointment Confirmed</h3>
+    <Router>
+      <Routes>
 
-          <p>
-            🎟️ Your Token Number: <strong>{lastToken}</strong>
-          </p>
+        {/* Patient Booking Page */}
+        <Route
+          path="/"
+          element={
+            <div style={{ maxWidth: 900, margin: "40px auto", fontFamily: "Arial" }}>
+              {lastToken && (
+                <div style={{
+                  backgroundColor: "#e8f5e9",
+                  padding: 15,
+                  marginBottom: 15,
+                  borderRadius: 6,
+                  textAlign: "center",
+                }}>
+                  <h3>✅ Appointment Confirmed</h3>
+                  <p>🎟️ Token: <strong>{lastToken}</strong></p>
+                  <p>📅 Date: <strong>{lastDate}</strong></p>
+                  <p>⏰ Time: <strong>{lastTime}</strong></p>
+                </div>
+              )}
 
-          <p>
-            📅 Date: <strong>{lastDate}</strong>
-          </p>
-
-          <p>
-            ⏰ Time: <strong>{lastTime}</strong>
-          </p>
-
-          <p>Please arrive before your scheduled time.</p>
-        </div>
-      )}
-      <BookingForm
-        form={form}
-        handleChange={handleChange}
-        handleSubmit={handleSubmit}
-        bookedSlots={bookedSlots}
-        setForm={setForm}
-      />
-
-      <hr style={{ margin: "40px 0" }} />
-      <AdminLogin isAdmin={isAdmin} setIsAdmin={setIsAdmin} />
-      {isAdmin && (
-        <AdminDashboard
-          appointments={appointments}
-          updateStatus={updateStatus}
-          showTodayOnly={showTodayOnly}
-          searchTerm={searchTerm}
-          currentToken={currentToken}
-          setCurrentToken={setCurrentToken}
+              <BookingForm
+                form={form}
+                handleChange={handleChange}
+                handleSubmit={handleSubmit}
+                bookedSlots={bookedSlots}
+                setForm={setForm}
+              />
+            </div>
+          }
         />
-      )}
-    </div>
+
+        {/* Admin Page */}
+        <Route
+          path="/admin"
+          element={
+            <div style={{ maxWidth: 900, margin: "40px auto" }}>
+              <AdminLogin isAdmin={isAdmin} setIsAdmin={setIsAdmin} />
+
+              {isAdmin && (
+                <AdminDashboard
+                  appointments={appointments}
+                  updateStatus={updateStatus}
+                  showTodayOnly={showTodayOnly}
+                  searchTerm={searchTerm}
+                  currentToken={currentToken}
+                  setCurrentToken={setCurrentToken}
+                />
+              )}
+            </div>
+          }
+        />
+
+      </Routes>
+    </Router>
   );
 }
 
