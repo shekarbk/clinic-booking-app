@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 function BookingForm({
   form,
@@ -8,6 +9,7 @@ function BookingForm({
   setForm
 }) {
   const [slotError, setSlotError] = useState(false);
+  const navigate = useNavigate();
   return (
     <>
       <h2>🏥 Clinic Appointment Booking</h2>
@@ -116,6 +118,24 @@ function BookingForm({
           Book Appointment
         </button>
       </form>
+      <button
+        type="button"
+        onClick={() => navigate("/admin")}
+        style={{
+          position: "fixed",
+          top: 15,
+          right: 15,
+          padding: "6px 12px",
+          borderRadius: 6,
+          border: "1px solid #ccc",
+          backgroundColor: "#fafafa",
+          cursor: "pointer",
+          fontSize: "13px",
+          boxShadow: "0 1px 4px rgba(0,0,0,0.1)"
+        }}
+      >
+        🔐 Go to Admin
+      </button>
     </>
   );
 }

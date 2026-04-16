@@ -10,6 +10,7 @@ function AdminDashboard({
   searchTerm,
   currentToken,
   setCurrentToken,
+  setIsAdmin
 }) {
   const [showWalkInForm, setShowWalkInForm] = React.useState(false);
   const [activeTab, setActiveTab] = React.useState("today");
@@ -74,7 +75,35 @@ function AdminDashboard({
   const pendingToday = totalToday - completedToday - cancelledToday;
   return (
     <>
-      <h2>👩‍⚕️ Admin Dashboard</h2>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          padding: "10px 15px",
+          background: "#f5f5f5",
+          marginBottom: 15,
+        }}
+      >
+        <h2 style={{ margin: 0 }}>👩‍⚕️ Admin Dashboard</h2>
+
+        <button
+          onClick={() => {
+            setIsAdmin(false);
+            localStorage.removeItem("isAdmin");
+          }}
+          style={{
+            padding: "6px 12px",
+            borderRadius: 6,
+            border: "none",
+            backgroundColor: "#d32f2f",
+            color: "white",
+            cursor: "pointer",
+          }}
+        >
+          Logout
+        </button>
+      </div>
       <div
         style={{
           backgroundColor: "#f1f3f5",

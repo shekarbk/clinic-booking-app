@@ -1,11 +1,22 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 
 function AdminLogin({ isAdmin, setIsAdmin }) {
   const [password, setPassword] = useState("");
+  const inputRef = useRef(null);
+  // ✅ FIX: place useEffect here
+  useEffect(() => {
+    if (!isAdmin) {
+      setPassword(""); // clear password on logout
+      setTimeout(() => {
+        inputRef.current?.focus();
+      }, 0);
+    }
+  }, [isAdmin]);
 
   const handleLogin = () => {
     if (password === process.env.REACT_APP_ADMIN_PASSWORD) {
       setIsAdmin(true);
+      setPassword(""); // optional: clear after login also
     } else {
       alert("Incorrect password");
     }
@@ -36,10 +47,16 @@ function AdminLogin({ isAdmin, setIsAdmin }) {
         </p>
 
         <input
+          ref={inputRef}
           type="password"
           placeholder="Enter password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              handleLogin();
+            }
+          }}
           style={{
             width: "100%",
             padding: 10,

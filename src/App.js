@@ -216,6 +216,7 @@ function App() {
                   searchTerm={searchTerm}
                   currentToken={currentToken}
                   setCurrentToken={setCurrentToken}
+                  setIsAdmin={setIsAdmin}
                 />
               )}
             </div>
